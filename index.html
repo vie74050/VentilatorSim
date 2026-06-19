@@ -57,7 +57,7 @@
     gap:10px;
   }
   .rail{
-    width:62px;
+    width:46px;
     display:flex; flex-direction:column; gap:6px;
     flex-shrink:0;
     display: none;
@@ -104,7 +104,7 @@
   .scope{
     background: var(--bg-screen);
     border-radius:8px;
-    flex:1;
+    flex: 0 0 50%;
     min-width:0;
     padding:6px 4px 6px 2px;
     position:relative;
@@ -113,8 +113,51 @@
     display:block; width:100%; height:340px;
   }
 
+  .lungpanel{
+    background: var(--bg-screen);
+    border-radius:8px;
+    flex: 1 1 auto;
+    min-width:0;
+    padding:8px;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+  .lungpanel .lp-title{
+    font-size:9.5px; color:var(--text-dim); font-family:var(--mono);
+    letter-spacing:.3px; margin-bottom:2px;
+  }
+  .lungpanel svg{
+    width:100%; height:100%; display:block;
+  }
+  .lungpanel .lp-readout{
+    position:absolute; bottom:8px; left:8px; right:8px;
+    display:flex; justify-content:space-between;
+    font-family:var(--mono); font-size:9.5px; color:var(--text-faint);
+    pointer-events:none;
+  }
+  .lungpanel .lp-readout b{ color:var(--text-dim); font-weight:600; }
+
+  #lungL, #lungR{
+    transition: transform 0.05s linear;
+  }
+  .alv{
+    fill: #e8978a;
+    stroke: #a8453a;
+    stroke-width: 0.8;
+    transition: transform 0.05s linear, fill 0.15s linear;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  #bronchL, #bronchR{
+    transition: stroke-width 0.4s ease, stroke 0.4s ease;
+  }
+  #lungSvg path[fill^="url"]{
+    transition: fill 0.4s ease;
+  }
+
   .vars{
-    width:108px;
+    width:98px;
     flex-shrink:0;
     display:flex; flex-direction:column; gap:5px;
   }
@@ -148,6 +191,9 @@
     padding:6px 14px;
     text-align:center;
     min-width:64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   .settile .lbl{ font-size:9px; color:var(--text-dim); font-family:var(--mono); letter-spacing:.2px;}
   .settile .val{ font-size:19px; font-weight:700; font-family:var(--mono); color:var(--text-hi);}
@@ -288,14 +334,6 @@
   <div class="device">
     <div class="rail">
       <div class="rail-btn alarm"><span class="ic">&#128276;</span>Alarms</div>
-      <div class="rail-btn"><span class="ic">&#9211;</span>Standby</div>
-      <div class="rail-btn"><span class="ic">&#9949;</span>Disconnect</div>
-      <div class="rail-btn"><span class="ic">&#9638;</span>Modes</div>
-      <div class="rail-btn"><span class="ic">&#9888;</span>Alarm<br>limits</div>
-      <div class="rail-btn"><span class="ic">&#128202;</span>Trends &amp;<br>logs</div>
-      <div class="rail-btn"><span class="ic">&#9995;</span>Maneuvers</div>
-      <div class="rail-btn"><span class="ic">&#9635;</span>Views</div>
-      <div class="rail-btn"><span class="ic">&#128274;</span>Lock<br>screen</div>
       <div class="rail-spacer"></div>
       <div class="o2boost">
         <div class="num">100</div>
@@ -323,6 +361,82 @@
       <div class="screen-main">
         <div class="scope">
           <canvas id="scopeCanvas"></canvas>
+        </div>
+        <div class="lungpanel">
+          <div class="lp-title">PATIENT MODEL</div>
+          <svg id="lungSvg" viewBox="0 0 220 300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="lungGradL" cx="35%" cy="30%" r="75%">
+                <stop offset="0%" stop-color="#ffb3a8"/>
+                <stop offset="100%" stop-color="#d9685c"/>
+              </radialGradient>
+              <radialGradient id="lungGradR" cx="65%" cy="30%" r="75%">
+                <stop offset="0%" stop-color="#ffb3a8"/>
+                <stop offset="100%" stop-color="#d9685c"/>
+              </radialGradient>
+            </defs>
+
+            <!-- trachea -->
+            <g id="trachea">
+              <rect x="103" y="10" width="14" height="38" rx="4" fill="#e7c9b8"/>
+              <line x1="103" y1="15" x2="117" y2="15" stroke="#b89a89" stroke-width="1.2"/>
+              <line x1="103" y1="22" x2="117" y2="22" stroke="#b89a89" stroke-width="1.2"/>
+              <line x1="103" y1="29" x2="117" y2="29" stroke="#b89a89" stroke-width="1.2"/>
+              <line x1="103" y1="36" x2="117" y2="36" stroke="#b89a89" stroke-width="1.2"/>
+              <line x1="103" y1="43" x2="117" y2="43" stroke="#b89a89" stroke-width="1.2"/>
+            </g>
+
+            <!-- bronchi -->
+            <path id="bronchL" d="M108,46 C95,58 78,64 64,72" fill="none" stroke="#c98a78" stroke-width="6" stroke-linecap="round"/>
+            <path id="bronchR" d="M112,46 C126,58 144,64 158,72" fill="none" stroke="#c98a78" stroke-width="6" stroke-linecap="round"/>
+
+            <!-- lungs (these scale/breathe) -->
+            <g id="lungL" style="transform-origin:64px 150px;">
+              <path d="M64,72
+                       C30,78 14,115 16,158
+                       C18,196 30,224 56,232
+                       C70,236 78,224 78,200
+                       L78,95
+                       C78,80 73,73 64,72 Z"
+                    fill="url(#lungGradL)" stroke="#b35a4d" stroke-width="1.5"/>
+                            
+            </g>
+
+            <g id="lungR" style="transform-origin:158px 150px;">
+              <path d="M158,72
+                       C194,78 210,118 208,164
+                       C206,206 192,236 162,240
+                       C146,244 138,230 138,204
+                       L138,95
+                       C138,80 147,73 158,72 Z"
+                    fill="url(#lungGradR)" stroke="#b35a4d" stroke-width="1.5"/>
+              
+            </g>
+
+            <!-- alveoli inset panel -->
+            <g id="alveoliInset">
+              <rect x="14" y="252" width="192" height="40" rx="6" fill="#15171a" stroke="#34383d" stroke-width="1"/>
+              <text x="22" y="265" font-family="IBM Plex Mono, monospace" font-size="7" fill="#8c9094" letter-spacing="0.3">ALVEOLI</text>
+
+              <path d="M30,283 L70,283 M70,283 L95,283 M95,283 L150,283 M150,283 L185,283"
+                    stroke="#c98a78" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+              <g id="alvGroup">
+                <circle class="alv" cx="40" cy="276" r="5"/>
+                <circle class="alv" cx="58" cy="277" r="4.3"/>
+                <circle class="alv" cx="80" cy="274" r="5.2"/>
+                <circle class="alv" cx="105" cy="277" r="4.6"/>
+                <circle class="alv" cx="128" cy="275" r="5"/>
+                <circle class="alv" cx="150" cy="278" r="4.4"/>
+                <circle class="alv" cx="172" cy="274" r="5.1"/>
+                <circle class="alv" cx="188" cy="277" r="4.2"/>
+              </g>
+            </g>
+          </svg>
+          <div class="lp-readout">
+            <span>C: <b id="lpComp">50</b> mL/cmH&#8322;O</span>
+            <span>R: <b id="lpRes">10</b></span>
+          </div>
         </div>
         <div class="vars">
           <div class="vtile amber">
@@ -365,14 +479,13 @@
   <div class="deck">
     <div class="deck-head">
       <h2>Operator controls</h2>
-      <span class="tag">not user controls; instructor settings</span>
+      <span class="tag">instructor settings for desired simulation parameters</span>
     </div>
 
     <div class="deck-grid">
 
       <!-- VENTILATOR SETTINGS CARD -->
       <div class="card">
-        <h3>Ventilator Settings</h3>
         
         <div id="vcGroup" class="modegroup">
           <div class="slider-row">
@@ -722,6 +835,7 @@
 
     render();
     updateReadouts();
+    updateLungVisual();
     requestAnimationFrame(loop);
   }
 
@@ -809,6 +923,70 @@
     $("vVTe").textContent = lastVTe || "--";
   }
 
+  // ---------------- LUNG VISUAL ----------------
+  const lungL = $("lungL"), lungR = $("lungR");
+  const bronchL = $("bronchL"), bronchR = $("bronchR");
+  const alvCircles = document.querySelectorAll(".alv");
+  let lpCompLast = null, lpResLast = null;
+
+  function updateLungVisual(){
+    // Vol is current instantaneous lung volume in liters; normalize against a nominal max breath size
+    const nominalMaxL = 0.8; // 800 mL ~ visual full-scale
+    const fillFrac = Math.max(0, Math.min(1, Vol / nominalMaxL));
+
+    // compliance affects how much the LUNG SHAPE itself expands per mL (stiff lungs barely move)
+    // map compliance 10-100 -> expansion gain 0.55 - 1.15
+    const C = patient.compliance;
+    const expGain = 0.55 + (Math.min(Math.max(C,10),100) - 10) / 90 * 0.6;
+
+    const lungScale = 1 + fillFrac * 0.22 * expGain;
+    const alvScale  = 1 + fillFrac * 1.35 * expGain; // alveoli are the dramatic, legible part
+
+    lungL.style.transform = `scale(${lungScale.toFixed(4)})`;
+    lungR.style.transform = `scale(${lungScale.toFixed(4)})`;
+    const brightness = 1 + fillFrac * 0.12;
+    lungL.style.filter = `brightness(${brightness.toFixed(3)})`;
+    lungR.style.filter = `brightness(${brightness.toFixed(3)})`;
+
+    alvCircles.forEach(c=>{
+      c.style.transform = `scale(${alvScale.toFixed(4)})`;
+    });
+
+    // resistance -> visually narrow / thicken & darken the airway (bronchi)
+    const R = patient.resistance;
+    const rFrac = Math.max(0, Math.min(1, (R - 4) / 36)); // 4 normal -> 40 severe
+    const bronchWidth = 6 - rFrac * 3.2; // narrows as resistance climbs
+    const bronchColor = rFrac > 0.5 ? "#8a5147" : "#c98a78";
+    [bronchL, bronchR].forEach(b=>{
+      b.setAttribute("stroke-width", bronchWidth.toFixed(1));
+      b.style.stroke = bronchColor;
+    });
+
+    // compliance -> lung tissue color (stiff/fibrotic lungs read denser & darker)
+    if(C !== lpCompLast){
+      const stiffFrac = Math.max(0, Math.min(1, (100 - C) / 90)); // 0 normal/floppy -> 1 very stiff
+      const lo = [186, 92, 80];   // darker stiffened red
+      const hi = [255, 179, 168]; // healthy light pink
+      const mix = lo.map((v,i)=> Math.round(v + (hi[i]-v)*(1-stiffFrac)));
+      const col = `rgb(${mix[0]},${mix[1]},${mix[2]})`;
+      document.querySelectorAll('#lungL path[fill^="url"], #lungR path[fill^="url"]').forEach(p=>{
+        p.style.fill = col;
+      });
+      $("lpComp").textContent = C;
+      lpCompLast = C;
+    }
+    if(R !== lpResLast){
+      $("lpRes").textContent = R;
+      lpResLast = R;
+    }
+
+    // Paw overdistension cue: alveoli flush warning-amber if pressure climbs high while near full inflation
+    const overDist = Paw > 30 && fillFrac > 0.6;
+    alvCircles.forEach(c=>{
+      c.style.fill = overDist ? "#e0a23d" : "#e8978a";
+    });
+  }
+
   // ---------------- SETTINGS BAR (device bottom strip) ----------------
   function renderSettingsBar(){
     const bar = $("settingsBar");
@@ -841,7 +1019,7 @@
     }
     bar.innerHTML = tiles.map(t=>(
       `<div class="settile" data-key="${t[0]}"><div class="lbl">${t[0].replace("\n","<br>")}</div><div class="val">${t[1]}</div></div>`
-    )).join('') + `<div class="chev-btn">&#10094;</div>`;
+    )).join('') ;
   }
 
   function flashSettingsBar(){
@@ -866,7 +1044,7 @@
     $("vcGroup").style.display = m==="VC" ? "" : "none";
     $("pcGroup").style.display = m==="PC" ? "" : "none";
     $("psGroup").style.display = m==="PS" ? "" : "none";
-   
+
     renderSettingsBar();
     $("modeNote").innerHTML = modeNotes[m];
     // reset breath state for a clean transition
