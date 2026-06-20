@@ -149,18 +149,6 @@ body {
     display: none;
 }
 
-.topbar .pbw {
-    color: var(--text-hi);
-}
-
-.topbar .right {
-    margin-left: auto;
-    display: flex;
-    gap: 14px;
-    align-items: center;
-    color: var(--text-hi);
-}
-
 .screen-main {
     display: flex;
     gap: 10px;

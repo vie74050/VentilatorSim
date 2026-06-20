@@ -516,14 +516,6 @@
     $("sEffort").value=e; $("rEffort").textContent= e===0?"0 (none)":e;
   }
 
-  // clock
-  function tickClock(){
-    const d = new Date();
-    $("clock").textContent = d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-  }
-  setInterval(tickClock, 1000*30);
-  tickClock();
-
   // init
   fitCanvas();
   renderSettingsBar();
